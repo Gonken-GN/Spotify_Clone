@@ -6,6 +6,10 @@ import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
 import Button from "./Button";
 import useAuthModal from "@/hooks/useAuthModal";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useUser } from "@/hooks/useUser";
+import { FaUserAlt } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 interface HeaderProps {
   children: React.ReactNode;
   classname?: string;
@@ -15,7 +19,18 @@ const Header: React.FC<HeaderProps> = ({ children, classname }) => {
   const router = useRouter();
   const logOut = () => {};
   const authModal = useAuthModal();
+  const supabaseClient = useSupabaseClient();
+  const { user } = useUser();
 
+  const handleLogout = async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    router.refresh();
+    if(error){
+      toast.error(error.message);
+    }else{
+      toast.success('Logged out!');
+    }
+  };
   return (
     <div
       className={twMerge(
@@ -47,21 +62,38 @@ const Header: React.FC<HeaderProps> = ({ children, classname }) => {
           </button>
         </div>
         <div className="flex justify-between items-center gap-x-4">
-          <>
-            <div>
+          {user ? (
+            <div className="flex gap-x-4 items-center">
+              <Button className="bg-white px-6 py-2" onClick={handleLogout}>
+                Logout
+              </Button>
               <Button
-                onClick={authModal.onOpen}
-                className="bg-transparent text-neutral-300 font-medium"
+                className="bg-white px-6 py-2"
+                onClick={() => router.push("/account")}
               >
-                Sign Up
+                <FaUserAlt />
               </Button>
             </div>
-            <div>
-              <Button onClick={authModal.onOpen} className="bg-white px-6 py-2">
-                Log In
-              </Button>
-            </div>
-          </>
+          ) : (
+            <>
+              <div>
+                <Button
+                  onClick={authModal.onOpen}
+                  className="bg-transparent text-neutral-300 font-medium"
+                >
+                  Sign Up
+                </Button>
+              </div>
+              <div>
+                <Button
+                  onClick={authModal.onOpen}
+                  className="bg-white px-6 py-2"
+                >
+                  Log In
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </div>
       {children}
