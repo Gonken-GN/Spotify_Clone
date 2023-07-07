@@ -90,21 +90,6 @@ const UploadModal = () => {
       toast.success("Successfully uploaded");
       reset();
       uploadModal.onClose();
-      // upload song and image
-      // const { data: uploadData, error: uploadError } = await supabaseClient.storage
-      // .from("uploads")
-      // .upload(
-      //     `upload-${values.title}-${uniqueID}`,
-      //     [songData.id, imageData.id],
-      //     {
-      //       cacheControl: "3600",
-      //       upsert: false,
-      //     }
-      //   );
-      // if (uploadError) {
-      //   toast.error(uploadError.message);
-      //   setisLoading(false);
-      //   return;
     } catch (error) {
       toast.error("something went wrong");
     } finally {
@@ -116,7 +101,7 @@ const UploadModal = () => {
       title="Add a song"
       description="Upload a mp3 file"
       isOpen={uploadModal.isOpen}
-      onChange={() => {}}
+      onChange={onChange}
     >
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
         <Input
