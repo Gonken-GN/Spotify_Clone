@@ -7,6 +7,7 @@ import Box from "./Box";
 import SidebarItem from "./SidebarItem";
 import Library from "./Library";
 import { Song } from "@/types";
+import usePlayer from "@/hooks/usePlayer";
 interface SidebarProps {
   children: React.ReactNode;
   songs: Song[];
@@ -14,6 +15,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ children, songs }) => {
   const pathName = usePathname();
+  const player = usePlayer();
   const routes = useMemo(
     () => [
       {
